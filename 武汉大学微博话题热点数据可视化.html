@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据可视化展示</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <script src="https://public.flourish.studio/resources/embed.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #f8c8d8;  /* 浅粉色背景 */
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      gap: 30px;
+    }
+
+    .flourish-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    svg {
+      width: 100%;
+      max-width: 900px;
+      height: 500px;
+    }
+
+    .flourish-embed {
+      width: 100%;
+      max-width: 900px;
+      margin: 20px 0;
+    }
+
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .flourish-embed img {
+      width: 100%;
+    }
+
+    .content-container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .text {
+      margin-top: 30px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: center;  /* 水平居中 */
+      align-items: center;      /* 垂直居中 */
+      text-align: center;       /* 文字居中 */
+      margin-left: auto;        /* 左右自动调整 */
+      margin-right: auto;       /* 左右自动调整 */
+    }
+
+
+
+    /* 最后一个组件的大小调整 */
+    #chart {
+      width: 100%;
+      max-width: 1200px;  /* 增加最大宽度 */
+      height: 700px;      /* 增加高度 */
+    }
+
+    /* 确保页面响应式设计 */
+    @media (max-width: 768px) {
+      main {
+        padding: 10px;
+      }
+      svg {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>武汉大学微博话题热点数据可视化</h1>
+  </header>
+  <div class="text" style="margin-top: 30px; margin-bottom: 20px">
+    <p>以下可视化效果由flourish和D3js制作，数据来源为使用开源项目Mediacrawler爬取的微博数据，并进行了数据清洗、关键词提取、情感分析等处理，最终呈现了微博话题热点的相关数据可视化效果。以下图表均为交互式响应效果，鼠标悬停与点击操作可以查看具体数据。</p>
+  </div>
+  <main>
+    <!-- Flourish 可视化展示 -->
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-scatter" data-src="visualisation/20895761">
+        <noscript><img src="https://public.flourish.studio/visualisation/20895761/thumbnail" alt="scatter visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>气泡图: 爬取了“武汉大学”、“珞珈”、“武大”三个关键词的1500条微博数据，以每条微博的点赞数为x轴，评论数为y轴，转发数为气泡的大小，颜色代表不同关键词来源，可以分析武汉大学相关的不同用户的互动量情况，可以看出“雷军”、“四川观察”、“央视新闻”、“康斯坦丁”等用户是武汉大学相关话题领域的关键影响者。</p>
+      </div>
+    </div>
+
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-word-cloud" data-src="visualisation/20895809">
+        <noscript><img src="https://public.flourish.studio/visualisation/20895809/thumbnail" alt="word-cloud visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>词云图: 利用百度词云 API，对抓取到的微博文本内容进行关键词提取和词频分析，可以看出“武汉大学”、“武大”、“武汉”、“珞珈山”、“雷军”、“人工智能”、“学校”、“东湖”、“校园”、“校友”等关键词出现频率较高，可以分析武汉大学主题相关微博的热点话题。</p>
+      </div>
+    </div>
+
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-map" data-src="visualisation/20895844">
+        <noscript><img src="https://public.flourish.studio/visualisation/20895844/thumbnail" alt="map visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>地图: 通过统计武汉大学主题相关微博的IP地点，可以看出发布者主要来自湖北省内，同时在全国各地均有分布，可以分析武汉大学在全国的讨论情况。</p>
+      </div>
+    </div>
+
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-chart" data-src="visualisation/20885100">
+        <noscript><img src="https://public.flourish.studio/visualisation/20885100/thumbnail" alt="chart visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>柱状图折线图: 统计了武汉大学相关的400个微博词条的讨论量和阅读量数据，选取讨论数前三十的词条，用柱形表示讨论量，折线表示阅读量，可以用于快速了解武汉大学最热门最流行的微博词条。</p>
+      </div>
+    </div>
+
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-chart" data-src="visualisation/20898941">
+        <noscript><img src="https://public.flourish.studio/visualisation/20898941/thumbnail" alt="chart visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>环形图: 使用百度情感分析API对抓取的微博数据的文本内容进行情感倾向分析，可以看出武汉大学相关微博的情感分布以正面为主，负面情感较少，还有部分中立。</p>
+      </div>
+    </div>
+
+    <div class="flourish-container">
+      <div class="flourish-embed flourish-chart" data-src="visualisation/20899179">
+        <noscript><img src="https://public.flourish.studio/visualisation/20899179/thumbnail" alt="chart visualization" /></noscript>
+      </div>
+      <div class="text">
+        <p>折线图:统计了近一个月来武汉大学相关微博的发布量，可以看出12月11日起发帖量激增，12月14日达到发帖量顶峰，说明近期可能出现了某些新的话题和热点，引起了微博用户的广泛讨论。</p>
+      </div>
+    </div>
+
+    <!-- 堆叠折线图 -->
+    <div class="content-container">
+      <svg id="chart"></svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="text">
+      <p>堆叠面积图: 选取了近一个月比较活跃的不同话题，对11月23日以来的数据情况进行了统计，不同颜色的条带表示不同的日期，自下往上时间逐步推移，横坐标是不同的词条，纵坐标是热度值，条带越宽说明热度越高，可以看出不同话题的热度随时间变化的趋势。</p>
+    </div>
+  </main>
+
+  <script>
+    // 硬编码的文件 URL
+    const fileUrl = 'https://raw.githubusercontent.com/creamyyyyyy/data_visualization_work/master/topic_time_data.xlsx';  // 使用 GitHub raw 链接
+
+    // 加载 Excel 文件
+    fetch(fileUrl)
+      .then(response => response.arrayBuffer())
+      .then(data => {
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        console.log(jsonData);  // 打印数据用于调试
+        processData(jsonData);  // 处理数据并绘制图表
+      })
+      .catch(error => console.error('文件加载错误:', error));
+
+    // 处理数据并绘制堆叠图
+    function processData(jsonData) {
+      // 获取列名（话题和日期）
+      const topics = jsonData[0].slice(1);  // 获取除去第一列的所有列名
+      const dates = jsonData.slice(1).map(row => row[0]);  // 获取所有日期（第一列）
+
+      // 格式化数据
+      const formattedData = dates.map((date, i) => {
+        const row = { date: date };
+        topics.forEach((topic, j) => {
+          row[topic] = jsonData[i + 1][j + 1];  // 将每个话题的热度值填入相应的日期
+        });
+        return row;
+      });
+
+      // 打印格式化后的数据进行调试
+      console.log(formattedData);
+
+      // 绘制堆叠折线图
+      drawStackedAreaChart(formattedData, topics);
+    }
+
+    // 绘制堆叠折线图
+    function drawStackedAreaChart(data, keys) {
+  const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+  const width = window.innerWidth - margin.left - margin.right;
+  const height = 700 - margin.top - margin.bottom;  // 增加图表高度
+
+  const svg = d3.select("#chart")
+    .attr("width", "100%")  // 设为100%，以适应父容器
+    .attr("height", height)
+    .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`) // 设置viewBox
+    .attr("preserveAspectRatio", "xMinYMin meet") // 保持比例
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // 设置时间刻度
+  const x = d3.scaleBand()
+    .domain(data.map(d => d.date))
+    .range([0, width])
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d3.sum(keys, key => +d[key]))])
+    .range([height, 0]);
+
+  // 设置颜色渐变为浅色系
+  const color = d3.scaleOrdinal(d3.schemePastel1);
+
+  // 转换为堆叠数据
+  const stack = d3.stack().keys(keys);
+  const series = stack(data);
+
+  // 绘制堆叠折线图
+  const area = d3.area()
+    .x(d => x(d.data.date) + x.bandwidth() / 2) // 中心对齐
+    .y0(d => y(d[0]))
+    .y1(d => y(d[1]))
+    .curve(d3.curveMonotoneX); // 平滑曲线
+
+  svg.selectAll(".area")
+    .data(series)
+    .enter().append("path")
+    .attr("class", "area")
+    .attr("d", area)
+    .style("fill", (d, i) => color(i))  // 使用浅色系配色
+    .on("mouseover", function(event, d) {
+      d3.select(this).style("opacity", 0.7);
+      const tooltip = d3.select("#tooltip");
+      tooltip.transition().duration(200).style("opacity", .9);
+      tooltip.html(`${d.key}<br>${d3.select(this).datum().map(p => `${p.data.date}: ${p[1] - p[0]}`).join("<br>")}`)
+        .style("left", `${event.pageX + 5}px`)
+        .style("top", `${event.pageY - 28}px`);
+    })
+    .on("mouseout", function() {
+      d3.select(this).style("opacity", 1);
+      d3.select("#tooltip").transition().duration(500).style("opacity", 0);
+    });
+
+  // 添加 X 轴
+  svg.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x));
+
+  // 添加 Y 轴
+  svg.append("g")
+    .attr("class", "y-axis")
+    .call(d3.axisLeft(y));
+}
+
+  </script>
+  
+  
+</body>
+</html>
